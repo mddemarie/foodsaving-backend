@@ -14,6 +14,14 @@ class IsUpcoming(permissions.BasePermission):
         else:
             return obj.date > timezone.now() + timedelta(minutes=1)
 
+class IsPast(permissions.BasePermission):
+    message = _('The pickup date is in the future. You only can give feedback to past events.')
+
+    def has_object_permission(self, request, view, obj):
+        if request.method in permissions.SAFE_METHODS:
+            return True
+        else:
+            return obj.date < timezone.now() + timedelta(minutes=1)
 
 class IsEmptyPickupDate(permissions.BasePermission):
     message = _('You can only delete empty pickup dates.')

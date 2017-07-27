@@ -8,9 +8,9 @@ from rest_framework.viewsets import GenericViewSet
 
 from foodsaving.stores.filters import PickupDatesFilter, PickupDateSeriesFilter
 from foodsaving.stores.permissions import IsUpcoming, HasNotJoinedPickupDate, HasJoinedPickupDate, IsEmptyPickupDate, \
-    IsNotFull
+    IsNotFull, IsPast
 from foodsaving.stores.serializers import StoreSerializer, PickupDateSerializer, PickupDateSeriesSerializer, \
-    PickupDateJoinSerializer, PickupDateLeaveSerializer
+    PickupDateJoinSerializer, PickupDateLeaveSerializer, PickupDatePickupFeedbackSerializer
 from foodsaving.stores.models import Store as StoreModel, PickupDate as PickupDateModel, \
     PickupDateSeries as PickupDateSeriesModel
 from foodsaving.utils.mixins import PartialUpdateModelMixin
@@ -151,3 +151,13 @@ class PickupDateViewSet(
     )
     def remove(self, request, pk=None):
         return self.partial_update(request)
+
+    @detail_route(
+        methods=['PATCH'],
+        permission_classes=(IsAuthenticated, HasJoinedPickupDate),
+        #add later the permission_class: IsPast, 
+        serializer_class=PickupDatePickupFeedbackSerializer
+    )
+    def pickup_feedback(self, request, pk=None):
+        return self.partial_update(request)
+

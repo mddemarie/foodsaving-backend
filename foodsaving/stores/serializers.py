@@ -24,6 +24,8 @@ post_store_create = Signal()
 post_store_modify = Signal()
 
 
+
+
 class PickupDateSerializer(serializers.ModelSerializer):
     class Meta:
         model = PickupDateModel
@@ -32,6 +34,7 @@ class PickupDateSerializer(serializers.ModelSerializer):
         extra_kwargs = {
             'series': {'read_only': True},
         }
+
     collector_ids = serializers.PrimaryKeyRelatedField(
         source='collectors',
         many=True,
@@ -93,6 +96,39 @@ class PickupDateSerializer(serializers.ModelSerializer):
         return date
 
 
+
+
+#try to aff a /folder in swagger
+
+class PickupDatePickupFeedbackSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PickupDateModel
+        fields = ['id', 'collector_ids', 'pickup_feedback', 'pickup_comment', 'pickup_weight']
+
+    pickup_feedback = serializers.PrimaryKeyRelatedField(many=True, queryset=PickupDateModel.objects.all())
+
+
+    def update(self, pickup_date, validated_data):
+        user = self.context['request'].user
+        pickup_date.pickup_feedback.add(user_comment)
+        post_pickup_feedback.send(
+            sender=self.__class__,
+            group=pickup_date.store.group,
+            store=pickup_date.store,
+            user=user,
+            payload=PickupDateSerializer(instance=pickup_date).data
+        )
+        return pickup_date
+    
+    collector_ids = serializers.PrimaryKeyRelatedField(
+        source='collectors',
+        many=True,
+        read_only=True
+    )
+
+
+
+
 class PickupDateJoinSerializer(serializers.ModelSerializer):
     class Meta:
         model = PickupDateModel
@@ -109,6 +145,7 @@ class PickupDateJoinSerializer(serializers.ModelSerializer):
             payload=PickupDateSerializer(instance=pickup_date).data
         )
         return pickup_date
+
 
 
 class PickupDateLeaveSerializer(serializers.ModelSerializer):

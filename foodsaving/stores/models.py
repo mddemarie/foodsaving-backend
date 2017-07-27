@@ -165,6 +165,10 @@ class PickupDate(BaseModel):
     )
     comment = models.TextField(blank=True)
     max_collectors = models.PositiveIntegerField(null=True)
+    pickup_feedback = models.CharField(max_length=600)
+    pickup_comment = models.TextField(blank=True)
+    pickup_weight = models.TextField(blank=True)
+
     deleted = models.BooleanField(default=False)
 
     # internal values for change detection
