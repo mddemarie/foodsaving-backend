@@ -35,6 +35,7 @@ RUN bash -c 'source /env/bin/activate; service postgresql start; python manage.p
 RUN echo 'source /env/bin/activate' >> /root/.bashrc
 
 EXPOSE 8000
+EXPOSE 5432
 # The '0.0.0.0:8000' makes the server listen on 0.0.0.0 instead of 127.0.0.1.
 # It seems docker cannot expose services bound to the loopback interface.
 CMD bash -c 'service postgresql start; service redis-server start; cd /foodsaving-backend; bash'
